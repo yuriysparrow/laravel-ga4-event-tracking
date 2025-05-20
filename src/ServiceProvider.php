@@ -31,13 +31,15 @@ class ServiceProvider extends BaseServiceProvider
             $this->bootForConsole();
         }
 
-        // Only register the listener if the measurement_id and api_secret are set
-        // to avoid unnecessary overhead.
-        if (config('ga4-event-tracking.measurement_id') !== null
-            && !config('ga4-event-tracking.api_secret') !== null
-        ) {
-            Event::listen(ShouldBroadcastToAnalytics::class, DispatchAnalyticsJob::class);
-        }
+        $this->app->booted(function () {
+            // Only register the listener if the measurement_id and api_secret are set
+            // to avoid unnecessary overhead.
+            if (config('ga4-event-tracking.measurement_id') !== null
+                && !config('ga4-event-tracking.api_secret') !== null
+            ) {
+                Event::listen(ShouldBroadcastToAnalytics::class, DispatchAnalyticsJob::class);
+            }
+        });
 
         Blade::directive('sendGA4ClientID', function () {
             return "<?php echo view('ga4-event-tracking::sendClientID'); ?>";
