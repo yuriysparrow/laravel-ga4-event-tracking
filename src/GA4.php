@@ -210,6 +210,10 @@ class GA4
             'events' => $events,
         ];
 
+        if (! empty($this->sessionId)) {
+            $requestData['session_id'] = $this->getSessionId();
+        }
+
         if (!empty($this->userId)) {
             $requestData['user_id'] = $this->userId;
         }
